@@ -1,11 +1,12 @@
+const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const cors = require('cors');
-const productRoutes = require('./routes/productRoutes');
-const userRoutes = require('./routes/userRoutes');
-const orderRoutes = require('./routes/orderRoutes');
-const adminRoutes = require('./routes/adminRoutes');
+const productRoutes = require(path.join(__dirname, 'routes/productRoutes'));
+const userRoutes = require(path.join(__dirname, 'routes/userRoutes'));
+const orderRoutes = require(path.join(__dirname, 'routes/orderRoutes'));
+const adminRoutes = require(path.join(__dirname, 'routes/adminRoutes'));
 
 // Load environment variables
 dotenv.config();

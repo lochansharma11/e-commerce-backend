@@ -1,8 +1,8 @@
+const path = require('path');
 const User = require(path.join(__dirname, '../models/User'));
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
-const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 

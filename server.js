@@ -21,7 +21,15 @@ connectDB().catch(err => {
 
 // Serve uploads directory statically
 const path = require('path');
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+const uploadsPath = path.join(__dirname, 'uploads');
+
+// Create uploads directory if it doesn't exist
+const fs = require('fs');
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(uploadsPath, { recursive: true });
+}
+
+app.use('/uploads', express.static(uploadsPath));
 
 // Middleware
 app.use(cors());
@@ -46,10 +54,19 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || '0.0.0.0';
 
+// Add error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err.stack);
+  res.status(500).json({
+    success: false,
+    error: 'Internal server error'
+  });
+});
+
 app.listen(PORT, HOST, () => {
   console.log(`Server running on ${HOST}:${PORT}`);
   console.log('Environment:', process.env.NODE_ENV);
-  console.log('MongoDB URI:', process.env.MONGO_URI || 'Not set');
+  console.log('MongoDB URI:', process.env.MONGODB_URL || 'Not set');
 }).on('error', (err) => {
   console.error('Server error:', err);
   process.exit(1);

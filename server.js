@@ -5,15 +5,22 @@ const cors = require('cors');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
-const adminRoutes = require('./routes/adminRoutes'); // <-- Added admin routes
+const adminRoutes = require('./routes/adminRoutes');
 
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
-connectDB();
-
+// Initialize express app
 const app = express();
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+// Connect to MongoDB
+connectDB().catch(console.error);
 
 // Serve uploads directory statically
 const path = require('path');
@@ -27,7 +34,12 @@ app.use(express.json());
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/admin', adminRoutes); // <-- Register admin routes
+app.use('/api/admin', adminRoutes);
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
 
 app.get('/', (req, res) => {
   res.send('API is running...');
@@ -39,4 +51,6 @@ const HOST = process.env.HOST || '0.0.0.0';
 
 app.listen(PORT, HOST, () => {
   console.log(`Server running on ${HOST}:${PORT}`);
+  console.log('Environment:', process.env.NODE_ENV);
+  console.log('MongoDB URI:', process.env.MONGO_URI);
 });

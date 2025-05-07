@@ -1,12 +1,11 @@
-const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const cors = require('cors');
-const productRoutes = require(path.join(__dirname, 'routes/productRoutes'));
-const userRoutes = require(path.join(__dirname, 'routes/userRoutes'));
-const orderRoutes = require(path.join(__dirname, 'routes/orderRoutes'));
-const adminRoutes = require(path.join(__dirname, 'routes/adminRoutes'));
+const productRoutes = require('./routes/productRoutes');
+const userRoutes = require('./routes/userRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -14,14 +13,11 @@ dotenv.config();
 // Initialize express app
 const app = express();
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
+// Connect to MongoDB with error handling
+connectDB().catch(err => {
+  console.error('MongoDB connection error:', err);
+  process.exit(1);
 });
-
-// Connect to MongoDB
-connectDB().catch(console.error);
 
 // Serve uploads directory statically
 const path = require('path');
@@ -46,12 +42,15 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-// Start server
+// Start server with error handling
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || '0.0.0.0';
 
 app.listen(PORT, HOST, () => {
   console.log(`Server running on ${HOST}:${PORT}`);
   console.log('Environment:', process.env.NODE_ENV);
-  console.log('MongoDB URI:', process.env.MONGO_URI);
+  console.log('MongoDB URI:', process.env.MONGO_URI || 'Not set');
+}).on('error', (err) => {
+  console.error('Server error:', err);
+  process.exit(1);
 });

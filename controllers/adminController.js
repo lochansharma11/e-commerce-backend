@@ -1,5 +1,6 @@
-const User = require('../models/userModel');
-const Order = require('../models/orderModel'); // Make sure this exists
+const path = require('path');
+const User = require(path.join(__dirname, '../models/userModel'));
+const Order = require(path.join(__dirname, '../models/orderModel')); // Make sure this exists
 
 // @desc    Get all users
 // @route   GET /api/admin/users

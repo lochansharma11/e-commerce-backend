@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require(path.join(__dirname, '../models/User'));
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');

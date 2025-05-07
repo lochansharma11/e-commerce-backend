@@ -5,6 +5,7 @@ const cors = require('cors');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const adminRoutes = require('./routes/adminRoutes'); // <-- Added admin routes
 
 // Load environment variables
 dotenv.config();
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes); // <-- Register admin routes
 
 app.get('/', (req, res) => {
   res.send('API is running...');
